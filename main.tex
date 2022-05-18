@@ -13,6 +13,22 @@
 
 \begin{document}
 
+\section{例1.5}
+
+\begin{equation}
+    _nC_{m-1}x^{m-1}(1-x)^{n-m+1}\times _{n-m+1}C_1\frac{dx}{1-x}\left(1-\frac{dx}{1-x}\right)^{n-m}
+\end{equation}
+
+ここで $dx$ が微小量であることを用いて、最後の部分をテイラー展開する\footnote{2022/05/19:この展開公式を忘れていた。Taylor展開は頭に入れ直しておこう...。}。
+$dx$の二次の項は微小量であるとして、
+\begin{equation}
+  \left(1-\frac{dx}{1-x}\right)^{n-m} \simeq 1-(n-m)\frac{dx}{1-x} + \mathcal{O}\left(dx^2\right)
+\end{equation}
+以上より
+\begin{equation}
+\frac{dx}{1-x}\left(1-\frac{dx}{1-x}\right)^{n-m} \simeq \frac{dx}{1-x} \times \left( 1-(n-m)\frac{dx}{1-x} \right) \simeq \frac{dx}{1-x} + \mathcal{O}\left(dx^2\right)
+\end{equation}
+
 \section{条件付き確率}
 \section{中心極限定理}
 \section{大数の法則}
