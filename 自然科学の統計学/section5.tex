@@ -1,0 +1,203 @@
+\documentclass[10pt, a4paper]{ltjsarticle}
+
+\usepackage{amsmath,amssymb}
+% \usepackage{bm}
+% \usepackage[pdftex]{graphicx}
+% \usepackage{ascmac}
+
+% \setlength{\textheight}{39\baselineskip}
+% \addtolength{\textheight}{\topskip}
+% \setlength{\voffset}{-0.5in}
+% \setlength{\headsep}{0.3in}
+
+\newcommand\refeq[1]{式(\ref{#1})}
+
+\begin{document}
+
+\section{多項分布の一様性検定}
+
+\subsection{$\chi^2$統計量の分解}
+
+$a\times b$の分割表（cross table）において、(5.10)に示した帰無仮説のもとでの適合度検定は次の統計量を用いていた
+
+\begin{eqnarray}
+  \chi^2 &=& \sum_{i=1}^a\sum_{j=1}^b  \frac{\left(y_{ij} - \hat{y_{ij}} \right)^2 }{\hat{y_{ij}}} \\
+  &=& \sum_{i=1}^a\sum_{j=1}^b \cfrac{\left(y_{ij} - \cfrac{y_{i\cdot}y_{\cdot j}}{n} \right)^2}{\cfrac{y_{i\cdot}y_{\cdot j}}{n}}
+\end{eqnarray}
+
+これは自由度 $\nu=(a-1)(b-1)$のカイ二乗分布に近似的に従う。
+
+\begin{eqnarray}
+  \chi^2 = \sum_{i=1}^{p+q}\sum_{j=1}^b \cfrac{\left(y_{ij} - \cfrac{y_{i\cdot}y_{\cdot j}}{n} \right)^2}{\cfrac{y_{i\cdot}y_{\cdot j}}{n}}
+\end{eqnarray}
+
+\subsection{順序カテゴリのモデル化}
+
+\section{分割表の対称性の検定}
+
+
+行と列が同種の属性を表す正方な分割表（cross table）にまとめられるデータは、基本的に対角成分が多くなる（=変化がない）。
+そのため通常の独立性の検定には意味がない。
+
+
+独立性の検定とは $p_{ij} = p_ip_j$ を仮定する独立モデルの適合度検定である。
+
+
+
+\subsection{対称性}
+
+行と列が同じ分類からなる正方分割データ\footnote{患者の治療の前後の病状、左右の裸眼の視力など~\cite{hirotsu}}について考える。
+このようなデータの場合、対角線上にデータが集中するため属性間の独立が成り立たないことが多い（=前節までの独立性の検定は意味がない）。このようなデータに対して興味があるのは、対角線に関して対称な位置にある成分の生起確率が同じであるかどうかである。
+
+教科書表5.11について、支持政党の推移が無いとする帰無仮説は
+\begin{equation}
+  H_0 : p_{ij} = p_{ji}
+\end{equation}
+で表される。これはある政党だけ支援者数が増加する傾向があるなどといった構造がないことを意味していて、全体として支持政党の推移はバランスが取れていることを仮定している（対称性がある）。
+対称性の検定では帰無仮説の構造についての検定と
+そこからのズレを議論する\footnote{対称性の解析には様々なモデルがあるそうで、Bowkerの対称モデル、Caussinusの準対称モデル、Stuartの周辺対称モデル、条件付き対称モデル、対角パラメータ対称モデル、線形対角パラメータ対称モデル、などなど。。。}。
+これは正方な分割表における対称性の適合度検定と呼ばれている。
+
+多項分布で考えるとデータが得られる確率（尤度関数）は式(5.4)を参考にして（セルっぽく$i$と$j$を使って）
+\begin{equation}
+  L(p) = \cfrac{n!}{\prod_i\prod_j y_{ij}!} \prod_i\prod_j p_{ij}^{y_{ij}} = n!\prod_i\prod_j \cfrac{p_{ij}^{y_{ij}}}{y_{ij}!}
+\end{equation}
+と書ける。帰無仮説$H_0:p_{ij}=p_{ji}$のもとで、$\sum_{i,j}p_{ij}=1$の束縛条件のもとでラグランジュの未定乗数法を使って
+\begin{eqnarray}
+  K = \log L -\lambda \left(\sum p_{ij}-1 \right)
+\end{eqnarray}
+を最適化する。ここで
+\begin{eqnarray}
+  \log L = \log n! + \sum_i\sum_j\left(y_{ij}\log p_{ij} - \log y_{ij}! \right) 
+\end{eqnarray}
+である。
+$i=j$、$i\neq j$の場合で偏微分の結果が変わることを考慮して
+\begin{eqnarray}
+  \cfrac{\partial K}{\partial p_{ii}} &=& \frac{y_{ii}}{p_{ii}} - \lambda = 0 \label{eq:5.26-1}\\
+  \cfrac{\partial K}{\partial p_{ij}} &=& \frac{y_{ij}}{p_{ij}} + \frac{y_{ji}}{p_{ji}} - 2\lambda = \frac{y_{ij}+y_{ji}}{p_{ij}} - 2\lambda = 0 \label{eq:5.26-2}\\
+  \cfrac{\partial K}{\partial \lambda} &=& \sum\sum p_{ij} = 1
+\end{eqnarray}
+最後の式に代入して
+\begin{eqnarray}
+  \sum_i\sum_j \cfrac{y_{ij}}{\lambda} + \sum_i\sum_j \cfrac{y_{ij}+y_{ji}}{2\lambda} &=& 1 \\
+  \therefore \lambda &=& n  
+\end{eqnarray}
+ゆえに最尤推定量を求めると、\refeq{eq:5.26-1}と\refeq{eq:5.26-2}から式(5.26)が得られる。
+
+また、$(i,j)$ のセルの生起確率は
+\begin{eqnarray}
+  \tilde{p_{ij}} = \frac{y_{ij}+y_{ji}}{2n}
+\end{eqnarray}
+とまとめて表せて（$i=j$の場合は式(5.26)の左側に帰着する）、これを用いると適合度検定の統計量が得られる。
+\begin{eqnarray}
+  \chi^2 &=& \sum_i\sum_j\cfrac{\left(y_{ij} - n\tilde{p_{ij}}\right)^2}{n\tilde{p_{ij}}} \\
+  &=& \sum_i\sum_j \left( y_{ij} - \cfrac{y_{ij}+y_{ji}}{2} \right)^2/\left(\cfrac{y_{ij}+y_{ji}}{2}\right) \\ 
+  &=& \mathop{\sum_i\sum_j}_{i\neq j} \left( \frac{1}{2} (y_{ij} - y_{ji}) \right)^2/\left(\cfrac{y_{ij}+y_{ji}}{2}\right) \\ 
+  &=& 2 \times \mathop{\sum_i\sum_j}_{i < j} \left( \frac{1}{2} (y_{ij} - y_{ji}) \right)^2/\left(\cfrac{y_{ij}+y_{ji}}{2}\right) \\ 
+  &=& \mathop{\sum_i\sum_j}_{i < j} \left( y_{ij} - y_{ji} \right)^2/\left(y_{ij}+y_{ji}\right) 
+\end{eqnarray}
+2行目から3行目には、$i=j$の場合に分母がゼロになることを、3行目から4行目には$i,j$の対称性から$i<j$の条件をつけた和で表現した。以上が式(5.27)の導出過程の理解である。
+
+
+
+
+
+\subsection{周辺対称性と準対称性}
+
+
+
+
+\section{ブラッドテリーのモデル}
+%
+\section{3次元分割表と対数線形モデル}
+
+https://biolab.sakura.ne.jp/chi-square-residual-analysis.html
+
+
+\newpage
+
+\section{Appendix}
+
+\subsection{$\chi^2$分布}
+
+自由度$n$のカイ2乗分布は
+
+\begin{equation}
+  f(x) = \frac{1}{\Gamma(n/2)}\left(\frac{1}{2}\right)^{n/2}x^{n/2-1}\exp({-x/2})
+\end{equation}
+
+確率変数$Z$が標準正規分布に従うとき、$Z^2$が自由度1のカイ二乗分布（$\chi^2_1$、$\chi^2(1)$）に従う。
+
+カイ二乗分布も再生性を持っており、
+
+\begin{equation}
+  \chi^2_m + \chi^2_n = \chi^2_{m+n}
+\end{equation}
+
+が成り立つ。
+
+$Z_1,...,Z_k$が互いに独立な確率変数とし、それぞれが標準正規分布に従うとする。このとき$Z_1,...,Z_k$の二乗和は自由度$k$のカイ二乗分布に従う
+\begin{equation}
+  Z_1^2+...+Z_k^2 \sim \chi^2_k
+\end{equation}
+
+% \url{https://risalc.info/src/st-chi-squared-distribution-summary.html}
+
+
+\subsection{分割表における独立性とは}
+
+下記のような分割表を考える。
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{c|ll|c}
+   &  $A_1$ & $A_2$ & Total \\ \hline
+ $B_1$  & $y_{11}$ & $y_{12}$  & $y_{1\cdot}$ \\
+ $B_2$  & $y_{21}$ & $y_{22}$  & $y_{2\cdot}$ \\ \hline
+ Total  & $y_{\cdot 1}$ & $y_{\cdot 2}$ & $y_{\cdot\cdot}$ 
+  \end{tabular}
+\end{table}
+
+各カテゴリの事象が観測される確率は
+\begin{table}[h]
+  \centering
+  \begin{tabular}{c|ll|c}
+   &  $A_1$ & $A_2$ & Total \\ \hline
+ $B_1$  & $p_{11}$ & $p_{12}$  & $p_{1\cdot}$ \\
+ $B_2$  & $p_{21}$ & $p_{22}$  & $p_{2\cdot}$ \\ \hline
+ Total  & $p_{\cdot 1}$ & $p_{\cdot 2}$ & $p_{\cdot\cdot}$ 
+  \end{tabular}
+\end{table}
+で表される。
+条件付き確率で書き下すと、例えばセル$(1,1)$の生起確率は
+\begin{equation}
+  p_{11} = P(A_1|B_1)
+\end{equation}
+で表される。 属性$A$と$B$に関係性がないとき、
+\begin{equation}
+  p_{11} = P(A_1|B_1) = P(A_1)P(B_1)
+\end{equation}
+と表される。分割表において独立とは、属性間に関係性がないことを指す。
+
+
+\subsection{適合度検定}
+
+ある母集団から$n$個の標本が得られ、それらが$k$個のクラスに分類されているとする。
+各クラスの観測数が$O_i$、理論上期待される値が$E_i$とするとき
+
+\begin{equation}
+  \sum_{i=1}^k \frac{(O_i-E_i)^2}{E_i}
+\end{equation}
+
+となる検定量を用いることがあり、これをピアソンのカイ二乗検定統計量と呼ぶ。
+観測データの確率分布が理論上想定している確率分布に等しいとする帰無仮説のもとで、$n\to\infty$の場合に（=近似的に）自由度$k-1$のカイ二乗分布に分布収束する。
+
+%- \url{file:///Users/ktakeda/Downloads/13460226_v61_3_p123-131_%E4%B8%AD%E5%B6%8B.pdf}
+
+
+\begin{thebibliography}{99}
+  \bibitem{hirotsu}  順序カテゴリの分割表における準対称モデルについて, 広津 \\
+  \bibitem{ref2} xxx 
+\end{thebibliography}
+
+\end{document}
