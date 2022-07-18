@@ -1,6 +1,13 @@
 \documentclass[10pt, a4paper]{ltjsarticle}
 
 \usepackage{amsmath,amssymb}
+\usepackage{listings}
+
+\usepackage{minted}
+\usepackage{xcolor}
+\definecolor{lightgray}{gray}{0.95}
+
+\usepackage{graphicx}
 % \usepackage{bm}
 % \usepackage[pdftex]{graphicx}
 % \usepackage{ascmac}
@@ -10,20 +17,65 @@
 % \setlength{\voffset}{-0.5in}
 % \setlength{\headsep}{0.3in}
 
+\usepackage{bookmark}
+\usepackage{xurl}
+\hypersetup{
+  unicode,
+  bookmarksnumbered=true,
+  hidelinks,
+  colorlinks=true,
+  citecolor=blue,
+  linkcolor=blue,
+  urlcolor=blue,
+  final}
+
 \newcommand\refeq[1]{式(\ref{#1})}
 
 \begin{document}
 
 \section{多項分布の一様性検定}
 
+\subsection{一様性検定}
+
+帰無仮説 $H_0: p_{i1},p_{i2},p_{i3}=p_1,p_2,p_3$の検定として、一様性を検定した。
+ただし不均一性が議論できたとして、そこから一歩進めてどのような不均一性か、どのようなモデルが適合するのか、を議論する必要がある。
+
+
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 \subsection{$\chi^2$統計量の分解}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
-$a\times b$の分割表（cross table）において、(5.10)に示した帰無仮説のもとでの適合度検定は次の統計量を用いていた
-
+$a\times b$の分割表（cross table）において、(5.10)に示した帰無仮説 $H_0 : p_{ij} = p_i\cdot p_j$ のもとでの適合度検定は、
+式(5.13)の様な総括的な$\chi^2$統計量を使用していた。
 \begin{eqnarray}
   \chi^2 &=& \sum_{i=1}^a\sum_{j=1}^b  \frac{\left(y_{ij} - \hat{y_{ij}} \right)^2 }{\hat{y_{ij}}} \\
   &=& \sum_{i=1}^a\sum_{j=1}^b \cfrac{\left(y_{ij} - \cfrac{y_{i\cdot}y_{\cdot j}}{n} \right)^2}{\cfrac{y_{i\cdot}y_{\cdot j}}{n}}
 \end{eqnarray}
+
+この$\chi^2$統計量は群間の差を表す成分に分解することができる。$\{1,2,...,p+q\}$を2群$I_1=\{1,2,...,p\},~I_2=\{p+1,...,p+q\}$に分割するとき、その群間の差を表す$\chi^2$成分は
+\begin{equation}
+  \chi^2(I_1;I_2) = \cfrac{y_{\cdot\cdot}\sum\limits_{j=1}^b
+  \left(
+    \sum\limits_{l=1}^p y_{lj} / \sum\limits_{l=1}^p y_{l\cdot} 
+    - \sum\limits_{l=p+1}^{p+q} y_{lj} / \sum\limits_{l=p+1}^{p+q} y_{l\cdot} 
+    \right)^2/y_{\cdot j}
+  }{
+  1/\sum\limits_{l=1}^p y_{l\cdot} + 1/\sum\limits_{l=p+1}^{p+q} y_{l\cdot}  
+  }
+  \label{eq:5.20}
+\end{equation}
+で与えられる（式(5.20)）。
+これを用いて全体の$\chi^2$を
+\begin{equation}
+  \chi^2 = \chi^2(1;2) + \chi^2(1,2;3) + ... + \chi^2(1,...,p;p+1,...,p+q)+...+\chi^2(1,...,a-1;a)
+\end{equation}
+と分解することができる。式中盤に出てくる$\chi^2(1,...,p;p+1,...,p+q)$は\refeq{eq:5.20}に相当する。$a=p+q=2$の場合を考えると全体の$\chi^2$は
+\begin{eqnarray}
+  \chi^2 &=& \chi^2(1;2) + \chi^2(1,2; 3) \\
+  &=& \chi^2(1;3) + \chi^2(1,3;2) \\
+  &=& \chi^2(2;3) + \chi^2(2,3;1)
+\end{eqnarray}
+のように、行の入れ替えを行うことで適宜群の定義を変えて計算を行うことができる。
 
 これは自由度 $\nu=(a-1)(b-1)$のカイ二乗分布に近似的に従う。
 
@@ -31,7 +83,21 @@ $a\times b$の分割表（cross table）において、(5.10)に示した帰無�
   \chi^2 = \sum_{i=1}^{p+q}\sum_{j=1}^b \cfrac{\left(y_{ij} - \cfrac{y_{i\cdot}y_{\cdot j}}{n} \right)^2}{\cfrac{y_{i\cdot}y_{\cdot j}}{n}}
 \end{eqnarray}
 
+全体の $\chi^2$は、$I_1=\{1,2,...,a-1\},~I_2=\{a\}$、さらに$I_1$に対して同様の分割を繰り返すことで式(5.21)が成り立つ。
+\begin{eqnarray}
+  \chi^2 &=& \chi^2(I_1; I_2) \\ 
+\end{eqnarray} 
+
+
+
+% =================================== %
 \subsection{順序カテゴリのモデル化}
+% =================================== %
+
+
+
+
+\newpage
 
 \section{分割表の対称性の検定}
 
@@ -104,12 +170,177 @@ $i=j$、$i\neq j$の場合で偏微分の結果が変わることを考慮して
 
 \subsection{周辺対称性と準対称性}
 
+対称性の仮説は周辺対称性と準対称性の２つの仮説に分解される\footnote{Caussinusは対称モデルの分解定理？、「対称モデルが成り立つための必要十分条件は、周辺対称モデルと準対称モデルの両方が成り立つことである」ことを示した}。
+
+\subsubsection{周辺対称性}
+
+周辺確率が等しい、という仮説。
+
+\subsubsection{準対称性}
+
+\newpage
+
+\section{ブラッドリーテリーのモデル}
+
+- \url{https://www.gavo.t.u-tokyo.ac.jp/~mine/japanese/IT/2017/toukei171211.pdf}
+
+強さをモデル化して議論するためのモデルを、ブラッドリー・テリーのモデルという。
+強さを表すパラメータを$\theta_i$としたときに、$i$が$j$に勝つ確率を$p_{ij}$として
+\begin{equation}
+  p_{ij} = \frac{\theta_i}{\theta_i + \theta_j}
+\end{equation}
+で表す。このパラメータは全体を定数倍しても確率値には影響しない。
+\begin{equation}
+  p_{ij} = \frac{c\theta_i}{c\theta_i + c\theta_j} =  \frac{\theta_i}{\theta_i + \theta_j}
+\end{equation}
+
+ブラッドリー・テリーのモデルは「苦手」を表すことはできず（ex. じゃんけんのようにグーはパーが苦手=勝てない、などは表現できない）、
+三すくみの関係性がないモデルと解釈することができる。$i$が$j$に、$j$が$k$に、$k$が$i$に勝つ確率を$p_{ij}, p_{jk}, p_{ki}$としたときに
+\begin{equation}
+  p_{ij}p_{jk}p_{ki} = \frac{\theta_i\theta_j\theta_k}{(\theta_i + \theta_j)+(\theta_j+\theta_k)(\theta_k+\theta_i)} = p_{ji}p_{kj}p_{ik}
+  \label{eq:5.34}
+\end{equation}
+となる。仮に三すくみの関係（$i$は$j$によく勝つ、$j$は$k$によく勝つ、$k$は$i$によく勝つ）があったとすると、
+\begin{equation}
+  p_{ij}p_{jk}p_{ki} > p_{ji}p_{kj}p_{ik}
+\end{equation}
+となることが分かる。\refeq{eq:5.34}からその三すくみの関係性を仮定していないのがブラッドリー・テリーのモデルであることが分かる。
+
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+\subsection{式(5.35)について}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+式(5.32)はデータが生成される確率であり尤度関数\footnote{bishop上p.22、尤度関数はパラメータベクトルを固定位したときに観測された
+データ集合がどれくらい起こりやすいかを表しているもので、$p(D|w)$と表される。}として考えることができるので、その対数を取ると
+\begin{eqnarray}
+  \log L &=& \log\mathop{\prod\prod}_{1\leq i \leq j \leq 6} {}_{y_{ij}+y_{ji}}C_{y_{ij}}(p_{ij})^{y_{ij}}(p_{ji})^{y_{ij}} \\
+  &=& \mathop{\sum\sum}_{1\leq i \leq j \leq 6} \log {}_{y_{ij}+y_{ji}}C_{y_{ij}}(p_{ij})^{y_{ij}}(p_{ji})^{y_{ji}} \\
+  &=& \mathop{\sum\sum}_{1\leq i \leq j \leq 6} 
+    \left\{ \log({}_{y_{ij}+y_{ji}}C_{y_{ij}}) + y_{ij}\log p_{ij} + y_{ji}\log p_{ji} \right\} \\
+  &=& \mathop{\sum\sum}_{1\leq i \leq j \leq 6} 
+    \left\{ \log({}_{y_{ij}+y_{ji}}C_{y_{ij}}) + y_{ij}\log \cfrac{\theta_i}{\theta_i+\theta_j} + y_{ji}\log \cfrac{\theta_j}{\theta_i+\theta_j} \right\} \\
+  &=& \mathop{\sum\sum}_{1\leq i \leq j \leq 6} 
+    \left\{ \log({}_{y_{ij}+y_{ji}}C_{y_{ij}}) + y_{ij}(\log\theta_i - \log(\theta_i+\theta_j)) + y_{ji}(\log\theta_j - \log(\theta_i+\theta_j)) \right\} \\
+  &=& \mathop{\sum\sum}_{1\leq i \leq j \leq 6} 
+    \left\{ \log({}_{y_{ij}+y_{ji}}C_{y_{ij}}) -(y_{ij}+y_{ji})\log(\theta_i+\theta_j)) + y_{ij}\log\theta_i + y_{ji}\log\theta_j \right\} \\
+  &=& \mathop{\sum\sum}_{1\leq i \leq j \leq 6} 
+    \left\{ \log({}_{y_{ij}+y_{ji}}C_{y_{ij}}) -(y_{ij}+y_{ji})\log(\theta_i+\theta_j))\right\} + \sum_i\sum_j(y_{ij}\log\theta_i + y_{ji}\log\theta_j ) \label{eq:5.35}
+\end{eqnarray}
+となる。教科書では$r_{ij}=y_{ij}+y_{ji}$、$y_{i\cdot}=\sum_j y_{ij}$を用いている。
+
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+\subsection{式(5.36)について}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+計算した対数尤度\refeq{eq:5.35}と、制約
+\begin{equation}
+  \sum_{i=1}^a \theta_i = K \label{eq:5.37}
+\end{equation}
+の元でラグランジュの未定乗数法を使って最尤推定量を求める。
+ただし$i=j$の場合、対数の中身が1/2になって偏微分がゼロになるため、$i \neq j$の場合にのみに絞って考える\footnote{\url{https://personal.psu.edu/drh20/papers/bt.pdf}によると、「$w_{ij}$ denotes the number of times individual $i$ has beaten individual $j$ and we assume $w_{ii} = 0$ by convention」とあるので、教科書でも$y_{ii}=0$とするのが良いかもしれない。いずれにせよ$i\neq j$の場合のみを考える。}。
+\begin{eqnarray}
+  \mathcal{L} &=& \mathop{\sum\sum}_{1\leq i \leq j \leq 6} 
+    \left\{ \log({}_{y_{ij}+y_{ji}}C_{y_{ij}}) -(y_{ij}+y_{ji})\log(\theta_i+\theta_j)) + y_{ij}\log\theta_i + y_{ji}\log\theta_j \right\} - \lambda \left(\sum_i\theta_i -K\right)
+\end{eqnarray}
+\begin{eqnarray}
+  \frac{\partial}{\partial\theta_i} \log L &=& \mathop{\sum_{j}}_{j\neq i} \left( \frac{y_{ij}}{\theta_i} - \frac{y_{ij}+y_{ji}}{\theta_i + \theta_j} \right) - \lambda = 0 \label{eq:5.36-1}\\
+  \frac{\partial}{\partial\lambda} \log L &=& \sum_i\theta_i -K = 0 \label{eq:5.36-2}
+\end{eqnarray}
+\refeq{eq:5.36-1}より（正直あやしいです）
+\begin{eqnarray}
+  \sum_j y_{ij} &=& \sum_j\frac{\theta_i}{\theta_i + \theta_j}(y_{ij}+y_{ji}) - \lambda\theta_i \\
+  &=& \sum_j p_{ij}(y_{ij}+y_{ji}) - \lambda\theta_i \\
+  &=& \sum_j \cfrac{y_{ij}}{y_{ij}+y_{ji}}\cdot(y_{ij}+y_{ji}) - \lambda\theta_i \\
+  &=& \sum_j y_{ij} - \lambda\theta_i
+\end{eqnarray}
+ここでパラメータ$\theta_i\neq 0$であるので、$\lambda=0$。
+よって最尤推定量は\refeq{eq:5.36-1}より
+\begin{equation}
+  \hat{\theta_i}\sum_j\frac{y_{ij}+y_{ji}}{\hat{\theta_i} + \hat{\theta_j}} = \sum_j y_{ij} \label{eq:5.36-2}
+\end{equation}
+となる。
 
 
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+\subsection{逐次近似的について}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
-\section{ブラッドテリーのモデル}
-%
+式(5.36)のような形で最尤推定値が与えられているので、陽には解けず数値的に解く必要がある。初期値を（教科書ではある段階での
+近似値）を$\hat{\theta_i^0}$ とする。\refeq{eq:5.36-2}を書き直して
+\begin{equation}
+  \hat{\theta_i}^1 =  \sum_j y_{ij} / \sum_j\frac{y_{ij}+y_{ji}}{\hat{\theta_i}^0 + \hat{\theta_j}^0}
+\end{equation}
+またこれは\refeq{eq:5.37}を満たすように適当にスケーリングして、
+\begin{equation}
+  \hat{\theta_i}^1 =  K \frac{\theta_i^1}{\sum\theta_i^1}
+\end{equation}
+こうすることである段階の値から次の段階の（？？？）最尤値が求まる。
+これを繰り返すことで、
+\begin{equation}
+  \lim_{n\to\infty}\hat{\theta_i^n} = \hat{\theta_i}
+\end{equation}
+となることが知られている\footnote{よく分からず。Wikiには「This estimation procedure improves the log-likelihood in every iteration, and eventually converges to a unique maximum.」と書いているのみ。}。
+
+教科書の「この手順を収束するまで繰り返す」というのが現実的にどの程度なのかよく分からないが、ある程度数値の変動がなくなったら
+操作をとめるのか。
+
+
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+\subsection{p.168ちょっとやってみた}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+
+\begin{minted}
+[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+bgcolor=lightgray,
+fontsize=\footnotesize,
+linenos
+]{python}
+y = np.array([[0, 14, 7, 13, 16, 18],
+              [12, 0, 15, 8, 16, 17],
+              [16, 9, 0, 12, 14, 12],
+              [12, 17, 12, 0, 13, 7],
+              [10, 10, 11, 12, 0, 11],
+              [ 4, 8, 12, 16, 13, 0],
+              ])
+K = 100
+
+np.random.seed(1)
+theta = np.random.randn(6)
+
+le_theta = np.zeros((6,100))
+
+for itr in range(100):
+    for i in range(len(theta)):
+        A = 0.
+        for j in range(len(theta)):
+            A += (y[i,j]+y[j,i])/(theta[i]+theta[j])
+        theta[i] = np.sum(y[i, :]) / A
+    theta[i] = K * theta[i]/(np.sum(theta))
+   
+    for i in range(len(theta)):
+        le_theta[i, itr] = theta[i]
+\end{minted}
+
+で逐次的に100回反復して求めると、次のような振る舞いになる。
+20回くらいの思考でだいたい収束していることがわかる\footnote{スケーリングをどのタイミングでするのかは関係ない？実際コード21行目を for j のループ内に入れても特に変化なし}。
+
+\begin{figure}[h]
+ \centering
+ \includegraphics[scale=0.6]{fig/brad}
+ \caption{}
+\end{figure}
+
+求めた$\theta$を使って適合度検定を行うと、教科書p.169のようにブラッドテリーのモデルは
+適していないことがわかる。
+よって三すくみの関係性が実際にはあるということもわかる。
+
+
+\newpage
+
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 \section{3次元分割表と対数線形モデル}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
 https://biolab.sakura.ne.jp/chi-square-residual-analysis.html
 
