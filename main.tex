@@ -1,4 +1,4 @@
-\documentclass[10pt,a4paper]{jsarticle}
+\documentclass[10pt,a4paper]{ltjsarticle}
 
 \usepackage{amsmath,amssymb}
 \usepackage{bm}
@@ -12,6 +12,7 @@
 \setlength{\headsep}{0.3in}
 
 \begin{document}
+
 
 \section{例1.5}
 
@@ -29,8 +30,152 @@ $dx$の二次の項は微小量であるとして、
 \frac{dx}{1-x}\left(1-\frac{dx}{1-x}\right)^{n-m} \simeq \frac{dx}{1-x} \times \left( 1-(n-m)\frac{dx}{1-x} \right) \simeq \frac{dx}{1-x} + \mathcal{O}\left(dx^2\right)
 \end{equation}
 
+\section{式(1.30)}
+
+ポワソン分布のモーメント母関数は
+
+\begin{equation}
+  M(t) = E[e^{tX}] = \sum_{k=0}^{\infty} e^{tk}\times \frac{e^{-\lambda}\lambda^k}{k!} = e^{-\lambda }\sum_{k=0}^{\infty} \frac{e^{tk}\lambda^k}{k!}
+\end{equation}
+
+ここで $e^{ax}$ のテイラー展開が
+
+\begin{equation}
+  e^{ax} = \sum \frac{a^k}{k!} x^k
+\end{equation}
+
+であることを使用して、$a=e^t$と$x=\lambda$を代入すると
+
+\begin{equation}
+  M(t) = E[e^{tX}] = exp[-\lambda(1-e^t)]
+\end{equation}
+
+となる。
+
 \section{条件付き確率}
+
 \section{中心極限定理}
-\section{大数の法則}
+
+
+\section{中心極限定理}
+
+\section{ガウスマルコフの定理}
+
+線形モデル $y = X\theta + \epsilon$ に関する任意の推定可能関数 $\ell^T\theta$ について、$\ell^T\hat{\theta}$ が BLUEを与える。
+ただし $\hat{\theta}$ は正規方程式 $X^TX\hat{\theta} = X^T\theta$を満たす。
+
+
+\section{確率分布}
+
+\subsection{カイ二乗分布}
+\subsection{t分布}
+\subsection{F分布}
+
+
+\section{線形代数}
+
+
+\begin{equation}
+  \frac{\partial A^Tx}{\partial x} = \frac{\partial x^TA}{\partial x}= A
+\end{equation}
+
+\begin{itemize}
+  \item 行列$A$がフルランク→行列$A$は正則（逆行列を持つ）
+\end{itemize}
+
+\section{収束}
+
+\subsection{確率収束}
+
+確率変数列 $X_n$ が確率変数 $X$ に確率収束するとは、任意の $\epsilon > 0$ に対して、
+\begin{equation}
+  \lim_{n\to\infty} P(|X_n - X|>\epsilon) = 0
+\end{equation}
+が成り立つことをいう。
+
+\subsection{分布収束}
+
+\section{統計的推定}
+
+\section{不偏性}
+
+推定量が不偏推定量であるとは、すべての$\theta$に対して
+\begin{equation}
+  E[\hat{\theta}] = \theta
+\end{equation}
+が成り立つことをいう。
+
+
+
+\section{フィッシャー情報量}
+
+
+
+\section{検定論}
+
+標本 $X$ から判断を決定 $d$ するための関数を決定関数 $\delta$ といい、検定論では「検定関数」という。
+
+\subsection{用語}
+
+検定の標準的な損失関数として決定関数を用いて
+
+\subsection{用語}
+
+\begin{itemize}
+  \item 決定：データから判断（ex. 帰無仮説をどうするかなど...）すること
+  \item 損失関数：決定の結果被る損失を数式で評価しているもの
+  \item リスク関数：損失関数の期待値
+  \item 決定関数（検定関数）
+\end{itemize}
+
+
+\subsubsection{過誤}
+
+帰無仮説 $H_0$ が正しいときに帰無仮説を棄却する誤りを第一種の過誤、
+帰無仮説 $H_0$ が正しくないのに帰無仮説を受容する誤り（対立仮説 $H_1$ が正しいときに帰無仮説を受容する誤り）を第二種の過誤という。
+損失関数を用いると
+\begin{equation}
+  L(\theta, 0)
+  = \left\{
+    \begin{array}{ll}
+    0,~~\rm{if~~\theta \in \Theta_0} \\
+    1,~~\rm{if~~\theta \in \Theta_1} 
+    \end{array}
+  \right.
+\end{equation}
+\begin{equation}
+  L(\theta, 1)
+  = \left\{
+    \begin{array}{ll}
+    1,~~\rm{if~~\theta \in \Theta_0} \\
+    0,~~\rm{if~~\theta \in \Theta_1} 
+    \end{array}
+  \right.
+\end{equation}
+と表すことができる。
+
+ここで、帰無仮説 $H_0$ が正しいと判断することを「受容する」、帰無仮説が間違っていると判断することを「棄却する」という。
+これらの決定をそれぞれ $d=0$、$d=1$ と表す。
+
+
+\subsection{検出力（power）}
+
+\begin{itembox}[l]{検出力関数（power function）}
+  決定が $d=1$ となる確率を検出力といい、その値を計算するための関数を
+\begin{equation}
+  \beta_\delta(\theta) = P_\theta(\delta(X)=1) = P_\theta(X\in R)
+\end{equation}
+として定義し、検出力関数という。
+\end{itembox}
+
+検出力関数では$\theta$が$\Theta_0,\Theta_1$のどちらに属しているか（真にどちらが正しいか）には言及していない。
+単に検定関数 $\delta(x)$ が 1 になる、つまり帰無仮説を棄却する確率を表しているに過ぎない。
+
+
+\subsection{受容／棄却域}
+
+帰無仮説 $H_0$ が受容されるか棄却されるかの観点で、標本空間を分けることができる。$A=\{x|\delta(x)=0\}$ を受容域、$A^c=R=\{x|\delta(x)=1\}$ を棄却域と呼ぶ。
+
+
 
 \end{document}
