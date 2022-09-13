@@ -1,0 +1,322 @@
+\documentclass[10pt, a4paper]{ltjsarticle}
+
+\usepackage{amsmath,amssymb}
+\usepackage{listings}
+
+\usepackage{bm}
+\usepackage{amsmath}
+\usepackage{minted}
+\usepackage{xcolor}
+\definecolor{lightgray}{gray}{0.95}
+
+\usepackage{graphicx}
+% \usepackage{bm}
+% \usepackage[pdftex]{graphicx}
+% \usepackage{ascmac}
+
+% \setlength{\textheight}{39\baselineskip}
+% \addtolength{\textheight}{\topskip}
+% \setlength{\voffset}{-0.5in}
+% \setlength{\headsep}{0.3in}
+
+\usepackage{bookmark}
+\usepackage{xurl}
+\hypersetup{
+  unicode,
+  bookmarksnumbered=true,
+  hidelinks,
+  colorlinks=true,
+  citecolor=blue,
+  linkcolor=blue,
+  urlcolor=blue,
+  final}
+
+\newcommand\refeq[1]{式(\ref{#1})}
+% \setcounter{section}{7}
+
+\begin{document}
+
+\section{Introduction}
+
+被説明変数が離散的なデータ（質的データ）を扱う方法について8章では議論を深めている。
+
+被説明変数 $y_i$ と説明変数 $x_i$ が結び付けられるモデルを作りたい。これは、
+回帰係数を $\beta=(\beta_0,\beta_1,\beta_2,...)^T$、説明変数を $x=(1,x_{1i},x_{2i},...)^T$として、
+$y_i$と$x_i^T\beta$とを結びつけるモデルを作ること。被説明変数が1になる確率、$P(y_i=1)$をモデル化したいときに、
+そのまま線形回帰モデルを当てはめると負になったり1を超えたりと問題が生じる。そこで、仮想的な因子
+\begin{equation}
+  y_i^\ast = \bm{x}_i^T\bm{\beta} + \epsilon_i
+\end{equation}
+を用いて\footnote{教科書p.234 (8.2)式、$Y_i^\ast=\beta_0+\beta_1X_i+\epsilon_i$}
+\begin{equation}
+y_i = \begin{cases}
+1 & (y_i^\ast \geq 0 ) \\
+0 & (y_i^\ast < 0 )
+\end{cases}
+\end{equation}
+と被説明変数を決定されるものとする。このとき、$-\epsilon_i$の累積分布関数を$F(\cdot)$とすると、被説明変数が$1$になる確率は
+\begin{eqnarray}
+  P(y_i=1)&=&P(y_i^\ast \geq 0) \\
+  &=&P(\bm{x}_i^T\bm{\beta} + \epsilon_i \geq 0) \\
+  &=&P(-\epsilon_i \leq \bm{x}_i^T\bm{\beta}) \\
+  &=&F(\bm{x}_i^T\bm{\beta}) \label{eq:prob}
+\end{eqnarray}
+と表すことができる。
+誤差項（$\epsilon_i$）がどんな確率分布に従うか（累積分布関数として何を使用するか）で、プロビットモデル（標準正規分布）とロジットモデル（ロジスティックス分布）
+が導入され、（教科書によると）学問領域によって異なるとのこと。
+
+\subsection{プロビットモデル}
+
+被説明変数が$1$になる確率を$P(y_i=1)=p_i$とする。標準正規分布の分布関数$Phi(\cdot)$を用いて
+\begin{equation}
+  p_i = \Phi(\bm{x}_i^T\bm{\beta})
+\end{equation}
+とするモデルをプロビットモデルという。
+
+\subsection{ロジスティックモデル}
+
+ロジステック分布の分布関数を用いて
+\begin{equation}
+  p_i = \frac{\exp(\bm{x}_i^T\bm{\beta})}{1+\exp(\bm{x}_i^T\bm{\beta})}
+\end{equation}
+とするモデルをロジステックモデル（ロジステック回帰モデル）という。
+また、$\log(p_i/(1-p_i))$をロジットもしくは対数オッズといい、
+\begin{equation}
+  \log\frac{p_i}{1-p_i} = \bm{x}_i^T\bm{\beta}
+\end{equation}
+と、線形の形式で表すことができるので扱いやすい。
+
+
+
+\section{説明変数が2個以上の場合}
+
+本補助資料の \refeq{eq:prob} らへんの議論をそのまま繰り返して、仮想因子は
+\begin{equation}
+  y_i^\ast = \bm{x}_i^T\bm{\beta} + \epsilon_i
+\end{equation}
+であり、$P(y_i=1)=p_i$は
+\begin{equation}
+  p_i = F(\bm{x}_i^T\bm{\beta})
+\end{equation}
+で与えられる。いまは二値分類で考えているので尤度関数は
+\begin{eqnarray}
+  L(\bm{\beta}) &=& \prod_{i=1}^n p_{i}^{y_i}(1-p_i)^{1-y_i} \\
+&=& \prod_{y_i=0} (1-F(\bm{x}_i^T\bm{\beta})) \cdot \prod_{y_i=1} F(\bm{x}_i^T\bm{\beta})
+\end{eqnarray}
+であり、これを最大化することで $\beta$ の最尤推定量 $\hat{\beta}$ を求めることができる。
+
+
+
+\subsection{式（8.15）〜}
+回帰係数 $\beta$ に関する検定を行うために、最尤推定量 $\hat{\beta}$ の標本分布（漸近分布）を求める（教科書p.130〜132付近）
+\footnote{回帰係数に関する検定は教科書p.59〜の議論で、最小二乗推定量 $\ell^\prime\hat{\theta}$が正規分布 $N(\ell^\prime\theta, L^\prime L\sigma^2)$ に従うということを利用していた。}。
+
+対数尤度関数は
+\begin{eqnarray}
+  \ell(\bm{\beta}) &=& \sum_{i=1}^n \{y_i\log p_i + (1-y_i)\log(1-p_i) \} \\
+  &=& \sum_{i=1}^n \{y_i\log F(\bm{x}_i^T\bm{\beta}) + (1-y_i)\log(1-F(\bm{x}_i^T\bm{\beta})) \}
+\end{eqnarray}
+となる。ここで $\hat{\bm{\beta}}$ は一致推定量でありその漸近分布（$n\to\infty$のときに従う分布）は
+\begin{equation}
+  \sqrt{n}(\hat{\bm{\beta}}-\bm{\beta}) \xrightarrow{d} N \left(0, \frac{1}{I_1(\theta)}\right)
+\end{equation}
+であるので、フィッシャー情報量を計算する。$I_n(\theta)=-E[\partial^2/\partial\theta^2f(x,\theta)]$ を使いたいので、対数尤度関数の
+二階微分を計算する。
+\begin{eqnarray}
+  \frac{\partial \ell}{\partial\bm{\beta}} &=& \sum_{i=1}^n \left(\frac{y_i}{F(\bm{x}_i^T\bm{\beta})} - \frac{1-y_i}{1-F(\bm{x}_i^T\bm{\beta})} \right) 
+  f(\bm{x}_i^T\bm{\beta})\bm{x_i} \\
+  \frac{\partial \ell}{\partial\bm{\beta}\partial\bm{\beta}^T} &=& \sum_{i=1}^n \left(-\frac{y_i}{F(\bm{x}_i^T\bm{\beta})^2} - \frac{1-y_i}{1-F(\bm{x}_i^T\bm{\beta})^2} \right) 
+  f(\bm{x}_i^T\bm{\beta})^2\bm{x_i}\bm{x_i}^T  \nonumber \\
+  &+&\sum_{i=1}^n\left(\frac{y_i}{F(\bm{x}_i^T\bm{\beta})} - \frac{1-y_i}{1-F(\bm{x}_i^T\bm{\beta})} \right) f^\prime(\bm{x}_i^T\bm{\beta})\bm{x_i}\bm{x_i}^T
+  \label{eq:loglikelihood}
+\end{eqnarray}
+ここで
+\begin{equation}
+  E[y_i] = 1\cdot F(\bm{x}_i^T\bm{\beta}) + 0\cdot (1-F(\bm{x}_i^T\bm{\beta})) = F(\bm{x}_i^T\bm{\beta})
+\end{equation}
+であることを用いると\refeq{eq:loglikelihood} の二項目の期待値はゼロになる。ゆえに
+\begin{equation}
+  -E\left[\frac{\partial}{\partial\beta\partial\beta^T} \ell \right] = 
+  \sum_{i=1}^n \frac{f(\bm{x}_i^T\bm{\beta})^2\bm{x_i}\bm{x_i}^T}{F(\bm{x}_i^T\bm{\beta})(1-F(\bm{x}_i^T\bm{\beta})}
+\end{equation}
+となり、$I_1(\theta) = 1/nI_n(\theta)$ であることと、漸近分布が $n\to\infty$ であることを踏まえると、
+\begin{equation}
+  I_1(\theta) = \lim_{n\to\infty} \sum_{i=1}^n \frac{f(\bm{x}_i^T\bm{\beta})^2\bm{x_i}\bm{x_i}^T}{F(\bm{x}_i^T\bm{\beta})(1-F(\bm{x}_i^T\bm{\beta})}
+\end{equation}
+が求まり、漸近分布が計算できる（教科書的には$\bm{A}$を求めた）。
+
+\section{ベイズの定理}
+
+\subsection{(9.1)〜(9.2)式}
+ベイズの定理（教科書は分母を加法定理で変形した形を取っている）：
+\begin{equation}
+  P(Y|X) = \frac{P(X|Y)P(Y)}{P(X)} = \frac{P(X|Y)P(Y)}{\sum_Y P(Y|X)P(X)}
+\end{equation}
+ここで少し見やすく（？）観測データを $\mathcal{D}$、パラメータを$\bm{w}$ とすると（Bishop（上）p.21）、
+\begin{equation}
+  P(\bm{w}|\mathcal{D}) = \frac{P(\mathcal{D}|\bm{w})P(\bm{w})}{P(\mathcal{D})}
+\end{equation}
+という形を取り、データ $\mathcal{D}$ を観測した事後に $\bm{w}$ に関する事後分布を評価することが可能になる。分母は左辺の事後分布の
+規格化の条件を満たすものであり、明らかなものとして省略してもよい。すると、ベイズの定理は言葉で書くと：
+\begin{equation}
+\mathrm{事後確率} \propto \mathrm{尤度} \times 事前確率
+\end{equation}
+となる。
+
+p(D|w) という量は「データ集合Dに対する評価であって、パラメーターベクトル w の関数とみなせる。これを尤度関数と呼ぶ。これは、パラメーターベクトルを固定したときに観測されたデータ集合がどれくらい起こりやすいかを表している。」
+
+
+
+\section{事前確率分布と事後確率分布}
+
+\subsection{補助導入}
+
+他の教科書から、導入の補充：
+
+\begin{quote}
+事前分布 $p(\bm{w})$ は未知の母数に対して、観測値 $\mathcal{D}$ を得る以前に利用可能な情報を表すものとされる。... 
+さらにベイズ法では観測値を得たあとで観測値の実現値を固定したもとでのパラメータの条件付き分布（事後分布 $p(\bm{w}|\mathcal{D})$）を考慮する。
+ベイズ法においてはこの事後分布を求めることが本質的であり、いったん事後分布が求められれば推定、検定などの統計的推測問題の最適解が容易に求められる。
+% この事後分布 $p(\bm{w}|\mathcal{D})$ は観測値を得ることによる追加的な情報によって事前分布がどの様に変更されたかを表す。
+... 一方で、\underline{ベイズ統計学の問題点は事前分布をどう設定するかという点}である。
+
+\hfill{現代数理統計学（竹村）p.313}
+\end{quote}
+
+ということで、事前分布をどう設定するかがベイズ統計学のキモであるらしい。が、
+
+\begin{quote}
+ベイズ法における事前分布の選び方については、実際駅かつ広く受け入れられた標準的な方法がない。
+
+\hfill{現代数理統計学（竹村）p.313}
+\end{quote}
+
+とあるので、決定的な方法はないとのこと（数値計算などに便利であれば何でもいい？）。
+本教科書でも議論しているように、共役性という性質に基づいて事前分布を決定することで、
+解析的に便利な性質をもたせることができる。
+
+% p.319
+% 「事前分布が与えられれば事後分布はいわば機械的に計算され、統計的推測は事後分布に基づいて行えばよい。したがってベイズ方における主要な問題はどのようにして事前分布を決めるかということである」
+% と導入されている。
+% 
+%  ということで、パラメータ \theta の確率分布  を導入したい。このときに
+% 
+% 「解析的に便利な性質をいくつか持ち、簡潔に解釈される事前分布の形式について考えよう」と bishop は導入している。
+
+\subsection{(9.5)〜(9.6)式}
+
+例9.2の尤度関数を計算してみると、$n$ 回の試行中 $x$ 回の成功を得る確率は
+\begin{equation}
+  f(x|\theta) = {}_nC_x\theta^x(1-\theta)^{n-x}
+\end{equation}
+であり、事前確率 $w(\theta)$ さえ決まれば事後確率が計算でき、それ以降の統計処理を行うことができる。
+事前分布については：
+
+\begin{quote}
+  もし事前分布が $\theta$ と $(1-\theta)$ のべき乗に比例するように選ぶなら、
+   事後分布は事前分布と尤度関数の積に比例するので、事前分布と同じ関数形式になる。なおこの性質は共役性と呼ばれ...
+   
+   \hfill{Bishop(上)p.69}
+\end{quote}
+
+以上のことから、ここではベータ分布を事前分布に選ぶとよい。
+ベータ分布は
+\begin{eqnarray}
+  w(\theta) = \rm{Beta}(\theta|a,b) &=& 
+  \frac{1}{B(a,b)} \theta^{a-1}(1-\theta)^{b-1} \\ 
+ &=& \frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}\theta^{a-1}(1-\theta)^{b-1}
+\end{eqnarray}
+であり、事後確率の計算（9.3）式は
+\begin{eqnarray}
+  w^\prime(\theta|z) &\propto& w(\theta) f(z|\theta) \\
+  &\propto& \theta^{a+x-1}(1-\theta)^{b+n-x-1}
+\end{eqnarray}
+となり、事後確率分布としても $Be(a+x, b+n-x)$ のベータ分布が出てくる。
+なのでこの計算では
+\begin{equation}
+  a \to a+x, ~~b\to b+ n-x
+\end{equation}
+の変換をするだけでよいことになる\footnote{事前分布から、この集合を観測したあとの事後分布を求めるには $a$ の値を $x$ だけ、$b$ の値を $n-x$ だけ増やせば
+良いことがわかる。このことから事前分布のハイパーパラメータ $a,b$ はそれぞれ成功した・失敗した回数の有効観測数として解釈できる（Bishop（上）p.70）}。
+
+一般に、尤度関数に対して事前分布 $w(\cdot)$ と事後分布 $w^\prime(\cdot|\mathcal{D})$ が同一種類の分布に属するならば、
+単に統一分布俗内の変換を引き起こすだけであり、この分布族を $f$ の自然共役分布の族という。
+
+
+
+\subsection{ex.9.3}
+開発中の新薬が偽薬と比較して有効となる確率を シータ として、まったく手探りでわからないとすれば事前確率分布として一様分布を選ぶことができる。
+
+
+\subsection{p.258}
+
+正規母集団 $N(\theta, \sigma^2)$ から抽出し大きさ $n$ の標本を作成したとき、母分散 $\sigma^2$ が既知として尤度関数\footnote{母分散未知の場合のは
+逆ガンマ関数が共役事前分布となる。}は
+
+\begin{eqnarray}
+  f(\mathcal{D}|\theta) &=& \prod_{i=1}^n \frac{1}{\sqrt{2\pi}\sigma} \exp \left\{ - \frac{(x_i-\theta)^2}{2\sigma^2} \right\} \\
+  &=& \left(\frac{1}{\sqrt{2\pi}\sigma} \right)^n \exp \left\{ - \frac{\sum x_i^2 -2\theta\sum x_i + \sum \theta^2}{2\sigma^2} \right\}\\ 
+  &=& \left(\frac{1}{\sqrt{2\pi}\sigma} \right)^n \exp \left\{ - \frac{\sum x_i^2 -2n\theta\bar{x}+ n\theta^2}{2\sigma^2} \right\} \\ 
+  &=& \left(\frac{1}{\sqrt{2\pi}\sigma} \right)^n \exp \left\{ - \frac{\sum (x_i-\bar{x})^2+ n(\bar{x} - \theta)^2}{2\sigma^2} \right\} \\ 
+  &=& \left(\frac{1}{\sqrt{2\pi}\sigma} \right)^n \exp \left\{ - \frac{\sum (x_i-\bar{x})^2}{2\sigma^2} \right\} 
+  \cdot \exp \left\{ -\frac{n(\bar{x} - \theta)^2}{2\sigma^2} \right\}
+\end{eqnarray}
+第一項はデータから決まる量（かつここでは母分散既知）なので、(9.2b)の計算の際に分母の積分から飛び出て、分母・分子で打ち消し合う。
+以上から(9.3)式は
+\begin{equation}
+  w^\prime(\theta|z) \propto w(\theta) \exp \left\{ -\frac{n(\bar{x} - \theta)^2}{2\sigma^2} \right\}
+\end{equation}
+であり、事前分布も正規分布にとると計算の都合上便利で、
+\begin{equation}
+  w(\theta) = \frac{1}{\sqrt{2\pi}\tau} \exp \left\{ - \frac{(\theta-\lambda)^2}{2\tau^2} \right\}
+\end{equation}
+とすれば、事後分布は
+\begin{eqnarray}
+  w^\prime(\theta|z) &\propto& \exp \left\{ -\frac{n(\bar{x} - \theta)^2}{2\sigma^2} \right\}\exp \left\{ - \frac{(\theta-\lambda)^2}{2\tau^2} \right\} \\
+\end{eqnarray}
+指数部分だけを取り出すと（$\theta$ で平方完成）
+\begin{eqnarray}
+  && -\frac{1}{2} \left( \frac{n(\bar{x}-\theta)^2}{\sigma^2} + \frac{(\theta-\lambda)^2}{\tau^2}  \right) \\
+  &=& -\frac{1}{2} \left( \frac{n(\bar{x}-\theta)^2\tau^2 + (\theta-\lambda)^2\sigma^2}{\sigma^2\tau^2} \right) \\
+  &=& -\frac{1}{2} \left( \frac{(n\tau^2+\sigma^2)\theta^2 - 2(n\bar{x}\tau^2 + \lambda\sigma^2)\theta + n\bar{x}^2\tau^2 + \lambda^2\sigma^2}{\sigma^2\tau^2} \right) \\
+  &=& -\frac{1}{2} \left( \frac{(n\tau^2+\sigma^2)\left( \theta - \frac{(n\bar{x}\tau^2 + \lambda\sigma^2)}{n\tau^2+\sigma^2}\right)^2 - ... + n\bar{x}^2\tau^2 + \lambda^2\sigma^2}{\sigma^2\tau^2} \right)
+\end{eqnarray}
+定数部分（$\theta$ を含まない項）はおいておいて
+\begin{eqnarray}
+  -\frac{1}{2} \left( \frac{\left( \theta - \frac{n\bar{x}\tau^2 + \lambda\sigma^2}{n\tau^2+\sigma^2}\right)^2}{\sigma^2\tau^2/(n\tau^2+\sigma^2)} \right)
+\end{eqnarray}
+ということで、事後分布として　
+\begin{eqnarray}
+  平均~~&：&~~\frac{n\bar{x}\tau^2 + \lambda\sigma^2}{n\tau^2+\sigma^2} = \frac{\lambda/\tau^2 + n\bar{x}/\sigma^2}{1/\tau^2+n/\sigma^2} \\ 
+  分散~~&：&~~\frac{\sigma^2\tau^2}{n\tau^2+\sigma^2} 
+\end{eqnarray}
+の正規分布が出てくる。
+
+\newpage
+\section{Appendix}
+
+\subsection{フィッシャー情報量}
+
+$X=(X_1,...,X_n)$ の同時確率密度関数を $f_n(\bm{x},\theta)$ で表すときに、フィッシャー情報量は次式で定義される：
+\begin{equation}
+  I_n(\theta) = E_\theta\left[ \left(\frac{\partial}{\partial \theta} \log f_n(x,\theta) \right)^2\right] 
+  = -E_\theta \left[ \frac{\partial^2}{\partial\theta^2} \log f_n(\bm{x},\theta)\right]
+\end{equation}
+$I_n(\theta)$ は $n$ 個のデータのフィッシャー情報量を表す。
+
+
+\subsection{クラメールラオの下限}
+
+不偏推定量の分散の下限値を与える不等式で、フィッシャー情報量を用いて表される
+\begin{equation}
+  V[\hat{\theta}] \geq \frac{1}{I_n(\theta)}
+\end{equation}
+
+\subsection{漸近有効性について}
+母数の真の値を $\bm{\theta}$、最尤推定量を $\hat{\bm{\theta}}$ と表す。このとき $\sqrt{n}(\hat{\bm{\theta}}-\bm{\theta})$ は
+$N(0, I(\bm{\theta})^{-1})$ に分布収束する。
+\begin{equation}
+  \sqrt{n}(\hat{\theta}-\theta) \xrightarrow{d} N\left(0, \frac{1}{I(\theta)} \right)
+\end{equation}
+
+\end{document}
