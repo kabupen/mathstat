@@ -1,0 +1,122 @@
+\documentclass[10pt, a4paper]{ltjsarticle}
+
+\usepackage{../mathstat}
+
+\begin{document}
+
+
+\section{分散共分散行列}
+
+\begin{itembox}[l]{分散共分散行列}
+$d$次元特徴量ベクトル $\{\bm{x_i}\}~~i=1,...,n $ のデータに対して、分散共分散行列 $\Sigma$ は次式で定義される
+\begin{eqnarray}
+  \Sigma &=& \frac{1}{n} \sum_{i=1}^n (\bm{x_i} - \overline{\bm{x}})(\bm{x_i} - \overline{\bm{x}})^T \\ 
+   &=& E[\bm{x}\bm{x}^T] - E[\bm{x}]E[\bm{x}]^T
+\end{eqnarray}
+\end{itembox}
+
+ある特徴量縦ベクトルを考える。
+\begin{equation}
+  \bm{x} = \begin{pmatrix}
+    x^1 \\
+    x^2 \\
+    \vdots \\
+    x^d
+  \end{pmatrix}
+\end{equation}
+これらの特徴量のデータセット $\{\bm{x_i}\}~~i=1,...,n$ があった場合に、各次元に対して分散は次式で計算できる：
+\begin{equation}
+  Cov[x^i,x^i] = E\left[(x^i-E[x^i])^2\right] = E[(x^i)^2] - E[x^i]^2
+\end{equation}
+具体的に書き出すと
+\begin{equation}
+  V[x^i] = \frac{1}{n}\sum_{k=1}^n (x_k^{(i)} - \overline{x^i})^2
+\end{equation}
+となる。
+また次元 $x_i$ と $x_j$ の共分散は次式で定義される：
+\begin{equation}
+  Cov[x^i,x^j] = E\left[(x^i-E[x^i])(x^j-E[x^j])\right] = E[x^ix^j] - E[x^i]E[x^j]
+\end{equation}
+具体的に書き出すと
+\begin{equation}
+  Cov[x^i,x^j] = \frac{1}{n}\sum_{k=1}^n (x_k^{(i)} - \overline{x^i})(x_k^{(j)} - \overline{x^j})
+\end{equation}
+となる。ここで添字 $k$ は特徴量ベクトルの個数（＝データ数）を表しており、データ数と次元数の添字を混同しないこと。
+
+
+以上を分散共分散行列 $S$ としてまとめたい。まず
+\begin{equation}
+  \bm{x}\bm{x}^T = 
+  \begin{pmatrix}
+    x^1 \\
+    x^2 \\
+    \vdots \\
+    x^n
+  \end{pmatrix}
+  \left(x^1~x^2~\hdots~x^d\right) 
+  = 
+  \begin{pmatrix}
+    (x^1)^2 & x^1x^2 & \hdots & x^1x^n \\
+    x^2x^1 & \hdots & \hdots & x^2x^n \\
+    \vdots & \vdots & \vdots & \vdots \\
+    x^dx^1 & \hdots & \hdots & (x^d)^2
+  \end{pmatrix}
+\end{equation}
+であり、
+\begin{equation}
+  E[\bm{x}\bm{x}^T] = 
+  \begin{pmatrix}
+    E[(x^1)^2]  & E[x^1x^2] & \hdots & E[x^1x^d] \\
+    E[x^2x^1] & \hdots & \hdots & E[x^2x^d] \\
+    \vdots & \vdots & \vdots & \vdots \\
+    E[x^dx^1] & \hdots & \hdots & E[(x^d)^2]
+  \end{pmatrix}
+\end{equation}
+\begin{equation}
+  E[\bm{x}]E[\bm{x}]^T = 
+  \begin{pmatrix}
+    E[x^1]^2  & E[x^1]E[x^2] & \hdots & E[x^1]E[x^d] \\
+    E[x^2]E[x^1] & \hdots & \hdots & E[x^2]E[x^d] \\
+    \vdots & \vdots & \vdots & \vdots \\
+    E[x^d]E[x^1] & \hdots & \hdots & E[x^d]^2
+  \end{pmatrix}
+\end{equation}
+である。以上の $E[\bm{x}\bm{x}^T]$ と $E[\bm{x}]E[\bm{x}]^T$を用いると
+分散共分散行列は
+\begin{equation}
+ \Sigma =  
+  \begin{pmatrix}
+    Cov[x^1,x^1] & \hdots & Cov[x^1,x^d] \\ 
+    Cov[x^2,x^1] & \hdots & Cov[x^2,x^d] \\ 
+    \vdots       & \vdots & \vdots \\ 
+    Cov[x^n,x^1] & \hdots & Cov[x^d,x^d] 
+  \end{pmatrix}
+  = E[\bm{x}\bm{x}^T] -  E[\bm{x}]E[\bm{x}]^T
+\end{equation}
+と表され、具体的に書き出すと
+\begin{equation}
+ \Sigma = \frac{1}{n} \sum_{i=1}^n \bm{x_i}\bm{x_i}^T - \left(\frac{1}{n} \sum_{i=1}^n \bm{x_i} \right)\left(\frac{1}{n} \sum_{i=1}^n \bm{x_i}^T\right)
+\end{equation}
+と表される\footnote{期待値の計算 $E[\cdot]$ で和の計算を表していることに留意}。
+
+\section{Decorrelation}
+
+https://courses.media.mit.edu/2010fall/mas622j/whiten.pdf
+
+共分散行列は
+\begin{equation}
+  \Sigma = E(\bm{x}\bm{x}^T) - E(\bm{x})E(\bm{x})^T
+\end{equation}
+で表される。特徴量データを $\bm{x}^\prime = \bm{x} - E(\bm{x})$ と平均ゼロとなるように変換すると、
+\begin{equation}
+  \Sigma = E(\bm{x}^\prime(\bm{x}^\prime)^T)
+\end{equation}
+で表すことができる。簡単のために変換後の特徴量ベクトルを $\bm{x}$ と表す。decorrelation とは相関係数をゼロにする（無相関にする）操作である。
+相関係数は共分散を用いることで
+\begin{equation}
+  \rho = \frac{\sigma_{xy}}{\sigma_x\sigma_y}
+\end{equation}
+と計算されることを思い出すと、相関係数がゼロとは、共分散 $\sigma_{xy}$ がゼロになることと同値である。つまり分散共分散行列の対角成分だけが残りそれ以外がゼロとなる
+ような変換をすれば良いことになる。これは分散共分散行列を対角化することに等しく、固有値分解をすることで解くことができる。
+
+\end{document}
