@@ -72,4 +72,23 @@ V \left[\bar{X} = \frac{1}{n}\sum X_i\right] &=& \sigma^2/n
 \end{eqnarray}
 である。$n\to\infty$のとき分散がゼロになるので、標本平均は$\mu$の周りに分散ゼロで分布することになり、母平均に収束しそうな気がする。
 
+
+
+
+
+\section{中心極限定理}
+
+
+\begin{itembox}[l]{中心極限定理}
+
+  $X_1,...,X_n$ が互いに独立に分布関数に従い、標本平均 $\bar{X}$ について $E[\bar{X_n}]=\mu, V[\bar{X_n}]=\sigma^2/n$ が存在するとする。
+  標準化した標本平均の累積分布関数が標準正規分布の累積分布関数に収束する。
+  \begin{equation}
+    P \left(\frac{\sqrt{n}(\bar{X_n}-\mu)}{\sigma} \leq x \right) \to \Phi(x) ~~(n\to\infty)
+  \end{equation}
+
+\end{itembox}
+
+
+
 \end{document}
