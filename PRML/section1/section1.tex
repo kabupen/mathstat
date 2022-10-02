@@ -29,5 +29,17 @@
 \end{equation}
 となる。
 こうすることで、訓練データ $(\bm{x},\bm{t})$ を用いることで、最尤法からパラメータ $w,\beta$ を求めることができる。
+尤度関数は
+\begin{equation}
+  L = \prod_{i=1}^N N(t_i|y(x_i,\bm{w}), \beta^{-1})
+\end{equation}
+対数尤度関数は
+\begin{eqnarray}
+  \ln L &=& \sum_{i=1}^N \ln \frac{1}{\sqrt{2\pi}\sigma} \exp \left(\frac{(y(x_i,w)-t_i)^2}{2\sigma^2}\right) \\
+  &=& \frac{-N}{2} \ln 2\pi + N \ln \sigma - \frac{1}{2\sigma^2} \sum \{(y(x_i,w)-t_i)\}^2
+\end{eqnarray}
+となる。尤度関数の最大化は、パラメータ $w$ を決定するという観点からは第三項目の二乗和誤差を最小化するという
+ことと等価である。したがって、二乗和誤差関数は、ノイズがガウス分布に従うという仮定のもとで尤度の最大化の結果として
+解釈することができる。
 
 \end{document}
