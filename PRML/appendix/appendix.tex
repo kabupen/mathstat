@@ -1,0 +1,52 @@
+\documentclass[10pt, a4paper]{ltjsarticle}
+
+\usepackage{../../mathstat}
+
+\begin{document}
+
+\section{ベクトル微分}
+
+ベクトルで微分するときにも、要素ごとに微分するという考え方で微分計算をすればよく、深く考え込みすぎなくてよい。
+
+\subsection{vector-by-scalar}
+
+\begin{equation}
+  \frac{\partial \bm{y}}{\partial x} = \left(\frac{\partial y_1}{\partial x}, \frac{\partial y_2}{\partial x},..., \frac{\partial y_m}{\partial x} \right)
+\end{equation}
+
+
+\subsection{scalar-by-vector}
+
+\begin{equation}
+  \frac{\partial y}{\partial \bm{x}} = \left(\frac{\partial y}{\partial x_1}, \frac{\partial y}{\partial x_2},..., \frac{\partial y}{\partial x_n} \right)
+\end{equation}
+
+勾配ベクトル
+\begin{equation}
+  \nabla f(x,y,z) = \left(\frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z} \right)
+\end{equation}
+
+\subsection{vector-by-vector}
+
+\begin{equation}
+  \frac{\partial \bm{y}}{\partial \bm{x}} = 
+  \begin{bmatrix}
+    \frac{\partial y_1}{\partial x_1} & \frac{\partial y_1}{\partial x_2} & \hdots &\frac{\partial y_1}{\partial x_n}  \\
+    \vdots \\
+    \frac{\partial y_m}{\partial x_1} & \frac{\partial y_m}{\partial x_2} & \hdots &\frac{\partial y_m}{\partial x_n}  \\
+  \end{bmatrix}
+\end{equation}
+
+
+
+
+
+
+\subsection{ヘッセ行列}
+ヘッセ行列（hessian matrix）は
+\begin{equation}
+  H_{ij}  = \frac{\partial^2}{\partial x_i\partial x_j} f(\bm{x})
+\end{equation}
+である。
+
+\end{document}
